@@ -18,3 +18,14 @@ object cost {
     timer()(proc)._2
   }
 }
+
+object measure {
+  def apply[R](msg: String)(proc: => R)(implicit log: LoggingAdapter = null): R = {
+    val timerStart = System.nanoTime()
+    val r = proc
+    val timerStop = System.nanoTime()
+    val cost = timerStop - timerStart
+    if (log != null) log.warning(s"$msg cost $cost nanos")
+    r
+  }
+}
