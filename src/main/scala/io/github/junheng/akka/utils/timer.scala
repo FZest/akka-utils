@@ -25,7 +25,7 @@ object measure {
     val r = proc
     val timerStop = System.nanoTime()
     val cost = timerStop - timerStart
-    if (log != null) log.warning(s"$msg cost $cost nanos")
+    if (log != null) log.debug(s"$msg cost $cost nanos")
     r
   }
 }
