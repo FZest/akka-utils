@@ -2,9 +2,13 @@ package io.github.junheng.akka.utils.redis
 
 import akka.event.LoggingAdapter
 import com.wandoulabs.jodis.RoundRobinJedisPool
-import redis.clients.jedis.{JedisPoolConfig, Jedis}
+import redis.clients.jedis.{Jedis, JedisPoolConfig}
 
-object jodis {
+object jodis extends CodisSupport {
+  def apply[T](process: Jedis => T): Option[T] = invoke[T](process)
+}
+
+trait CodisSupport {
   var log: LoggingAdapter = _
   var pool: RoundRobinJedisPool = null
 
@@ -26,7 +30,7 @@ object jodis {
     }
   }
 
-  def apply[T: Manifest](process: Jedis => T): Option[T] = {
+  def invoke[T](process: Jedis => T): Option[T] = {
     try {
       val resource = pool.getResource
       try Option(process(resource)) catch {
